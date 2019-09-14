@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf_token" content="{{ csrf_token() }}" /> 
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>control-page</title>
+  </head>
+  <body>
+      <div class="container">
+
+            <div class="card mt-5">
+                    <div class="card-header">
+                      Create post 
+                    </div>
+                    <button class="btn btn-primary mt-2 mr-4 ml-4" @click="logOut()">logout</button>
+                    <form class="card-body" id="form" @submit.prevent="createUser()">
+                            <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="name" placeholder="Title" name="title" v-model='userData.title'>
+                                    </div>
+                                    <input type="text" class="form-control" id="email" placeholder="Description" name="description" v-model='userData.description'>
+                      <button class="btn btn-primary mt-2" id="addBtn" type="submit" value="Submit">Add</button>
+                  </form>
+            </div>
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+    let form = new Vue({
+        el: '#form',
+        data: {
+            userData: {
+              title: '',
+              description: '',
+              api_token: localStorage.getItem('api_token')
+            }
+        },
+        /*mounted() {
+          this.getToken();
+        },*/
+        updated() {
+          console.log(this.userData.api_token);
+        },
+        methods: {
+                createUser() {
+                    axios.post('/api/admin/posts', this.userData)
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                });
+            },
+
+            logOut() {
+                  localStorage.removeItem('api_token');
+            },
+
+            /*getToken() {
+              let token = JSON.parse(window.localStorage.getItem('api_token'));
+              if (token) {
+                  console.log(`${token} TRUE`);
+                  window.axios.defaults.headers.common['API_TOKEN'] = token;
+              } else {
+                  console.error('api_token not found');
+                  console.log(token);
+              }            
+           }*/
+        }
+    })
+  
+    </script>
+  </body>
+</html>

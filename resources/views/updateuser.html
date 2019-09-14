@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf_token" content="{{ csrf_token() }}" /> 
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>control-page</title>
+  </head>
+  <body>
+      <div class="container">
+
+            <form class="card mt-5" id="form" @submit.prevent="updateUser()" key="allUsers.length">
+                    <div class="card-header">
+                      Update user 
+                    </div>
+                    <div class="card-body">
+                            <div class="input-group mb-3">
+                                <ul class="list-group" v-for="usr in allUsers">
+                                  <li style="list-style: none;">
+                                      <li class="list-group-item">id: {{usr.id}}</li>
+
+                                    <li class="list-group-item">  
+                                        Username:<input type="text" class="form-control" id="name" placeholder="Username" name="name" v-model='allUsers[usr.id-1].name' >
+                                      </li>   
+
+                                      <li class="list-group-item">  
+                                        Email:<input type="text" class="form-control" id="email" placeholder="Email" name="email" v-model='allUsers[usr.id-1].email'>
+                                      </li>   
+
+                                      <li class="list-group-item">                    
+                                Password:<input type="text" class="form-control" id="password" placeholder="Password" name="password" v-model='allUsers[usr.id-1].password'>
+                              </li>   
+                              <button class="btn btn-primary" id="addBtn" type="submit" value="Submit" @click="userId = usr.id">Add</button>
+
+                                  </li>
+                                  </ul>                    
+                            </div>
+                </form>
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+    let form = new Vue({
+        el: '#form',
+        data: {
+            userId:'',
+            allUsers: []
+        },
+        methods: {
+          getId() {
+          },
+          getUser() {
+                    axios.get('/api/admin/users')
+                    .then((response) => {
+                     this.allUsers = response.data.data;
+                        console.log(this.allUsers)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                });
+            },
+                updateUser() {
+                    axios.put(`/api/admin/users/${this.userId}`, this.allUsers[this.userId-1])
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                });
+            }
+        },
+        mounted() {
+          this.getUser();
+        }
+    })
+  
+    </script>
+  </body>
+</html>
